@@ -1,13 +1,15 @@
 import { useMemo, useRef } from "react"
-import { AdditiveBlending, Color } from "three"
+import { AdditiveBlending, Color, MathUtils } from "three"
 import vertexShader from "../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../shaders/Galaxy/fragment.glsl"
 import { useFrame, useThree } from "@react-three/fiber"
-import { meshBounds } from "@react-three/drei"
+import { gsap } from "gsap"
+import store from "../store"
 
 export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0] }) {
     const { gl } = useThree()
 
+    const galaxy = useRef()
     const material = useRef()
 
     const defaults = {
@@ -76,13 +78,26 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
         material.current.uniforms.uTime.value = 50 + state.clock.elapsedTime
     }, [])
 
+    const { camera } = useThree()
+
     const clickEvent = (event) => {
         event.stopPropagation()
-        console.log('galaxy clicked', event)
+        console.log('galaxy clicked', camera)
+        if (galaxy.current) {
+            gsap.to(camera.position, { 
+                x: galaxy.current.position.x, 
+                y: galaxy.current.position.y, 
+                z: galaxy.current.position.z,
+                onComplete: () => {
+                    camera.lookAt(galaxy.current)
+                }
+            })
+        }
     }
 
     return <group>
         <mesh 
+            ref={galaxy}
             position={position} 
             rotation={rotation}
             onClick={clickEvent}

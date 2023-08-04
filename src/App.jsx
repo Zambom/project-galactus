@@ -5,6 +5,9 @@ import { useMemo } from 'react'
 import { generatePosition, generateRotation } from './utils/positioning'
 import { randomGalaxy } from './utils/randomizeElements'
 import { Perf } from 'r3f-perf'
+import { MathUtils, Object3D } from 'three'
+import { useFrame } from '@react-three/fiber'
+import store from './store'
 
 function App() {
   const galaxiesCount = 7
@@ -34,14 +37,32 @@ function App() {
       options={config.options}
       position={[config.position.x, config.position.y, config.position.z]} 
       rotation={[config.rotation.x, config.rotation.y, config.rotation.z]}
+      //position={[0, 0, 0]}
+      //rotation={[5.0762894106919285, 5.962762456976361, 5.542767988970172]}
     />
+  })
+
+  useFrame(({ camera }) => {
+    if (store.animationStarted) {
+      camera.position.x = MathUtils.damp(camera.position.x, store.targetObj.position.x, 4, 0.1)
+      camera.position.y = MathUtils.damp(camera.position.y, store.targetObj.position.y, 4, 0.1)
+      camera.position.z = MathUtils.damp(camera.position.z, store.targetObj.position.z, 4, 0.1)
+      
+      console.log(camera.rotation, store.targetObj.rotation)
+      camera.rotation.set(store.targetObj.rotation.x, store.targetObj.rotation.y, store.targetObj.rotation.z)
+
+      if (camera.position.distanceTo(store.targetObj.position) < 0.5) {
+        store.animationStarted = false
+      }
+      //camera.lookAt(store.targetObj.position)
+    }
   })
 
   return (
     <>
       <Perf position="top-left" />
 
-      <OrbitControls />
+      <OrbitControls makeDefault />
 
       {galaxies}
     </>
