@@ -3,6 +3,7 @@ import { AdditiveBlending, Color } from "three"
 import vertexShader from "../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../shaders/Galaxy/fragment.glsl"
 import { useFrame, useThree } from "@react-three/fiber"
+import { meshBounds } from "@react-three/drei"
 
 export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0] }) {
     const { gl } = useThree()
@@ -75,46 +76,61 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
         material.current.uniforms.uTime.value = 50 + state.clock.elapsedTime
     }, [])
 
-    return <group position={position} rotation={rotation}>
-        <points>
-            <bufferGeometry>
-                <bufferAttribute
-                    attach="attributes-position"
-                    count={parameters.count}
-                    itemSize={3}
-                    array={positions}
+    const clickEvent = (event) => {
+        event.stopPropagation()
+        console.log('galaxy clicked', event)
+    }
+
+    return <group>
+        <mesh 
+            position={position} 
+            rotation={rotation}
+            onClick={clickEvent}
+        >
+            <boxGeometry args={[15, 2, 15]} />
+            <meshBasicMaterial color="red" opacity={0} transparent />
+        </mesh>
+        <group position={position} rotation={rotation}>
+            <points>
+                <bufferGeometry>
+                    <bufferAttribute
+                        attach="attributes-position"
+                        count={parameters.count}
+                        itemSize={3}
+                        array={positions}
+                    />
+                    
+                    <bufferAttribute
+                        attach="attributes-color"
+                        count={parameters.count}
+                        itemSize={3}
+                        array={colors}
+                    />
+                    
+                    <bufferAttribute
+                        attach="attributes-aScale"
+                        count={parameters.count}
+                        itemSize={1}
+                        array={scales}
+                    />
+                    
+                    <bufferAttribute
+                        attach="attributes-aRandomness"
+                        count={parameters.count}
+                        itemSize={3}
+                        array={randomness}
+                    />
+                </bufferGeometry>
+                <shaderMaterial
+                    ref={material}
+                    fragmentShader={fragmentShader}
+                    vertexShader={vertexShader}
+                    depthWrite={false}
+                    vertexColors={true}
+                    blending={AdditiveBlending}
+                    uniforms={uniforms}
                 />
-                
-                <bufferAttribute
-                    attach="attributes-color"
-                    count={parameters.count}
-                    itemSize={3}
-                    array={colors}
-                />
-                
-                <bufferAttribute
-                    attach="attributes-aScale"
-                    count={parameters.count}
-                    itemSize={1}
-                    array={scales}
-                />
-                
-                <bufferAttribute
-                    attach="attributes-aRandomness"
-                    count={parameters.count}
-                    itemSize={3}
-                    array={randomness}
-                />
-            </bufferGeometry>
-            <shaderMaterial
-                ref={material}
-                fragmentShader={fragmentShader}
-                vertexShader={vertexShader}
-                depthWrite={false}
-                vertexColors={true}
-                blending={AdditiveBlending}
-                uniforms={uniforms}
-            />
-        </points>
+            </points>
+        </group>
     </group>
 }

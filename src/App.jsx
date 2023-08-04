@@ -4,6 +4,7 @@ import Galaxy from './components/Galaxy'
 import { useMemo } from 'react'
 import { generatePosition, generateRotation } from './utils/positioning'
 import { randomGalaxy } from './utils/randomizeElements'
+import { Perf } from 'r3f-perf'
 
 function App() {
   const galaxiesCount = 7
@@ -38,6 +39,8 @@ function App() {
 
   return (
     <>
+      <Perf position="top-left" />
+
       <OrbitControls />
 
       {galaxies}

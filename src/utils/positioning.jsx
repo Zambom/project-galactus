@@ -32,7 +32,7 @@ export const generatePosition = (positions) => {
         point.set(x, y, z)
 
         iterations += 1
-    } while (!testPosition(positions, point) || iterations < 1000)
+    } while (!testPosition(positions, point, 5) || iterations < 1000)
 
     return point
 }
