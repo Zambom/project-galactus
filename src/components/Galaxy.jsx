@@ -4,7 +4,7 @@ import vertexShader from "../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../shaders/Galaxy/fragment.glsl"
 import { useFrame, useThree } from "@react-three/fiber"
 
-export default function Galaxy({ options }) {
+export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0] }) {
     const { gl } = useThree()
 
     const material = useRef()
@@ -75,44 +75,46 @@ export default function Galaxy({ options }) {
         material.current.uniforms.uTime.value = 50 + state.clock.elapsedTime
     }, [])
 
-    return <points>
-        <bufferGeometry>
-            <bufferAttribute
-                attach="attributes-position"
-                count={parameters.count}
-                itemSize={3}
-                array={positions}
+    return <group position={position} rotation={rotation}>
+        <points>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach="attributes-position"
+                    count={parameters.count}
+                    itemSize={3}
+                    array={positions}
+                />
+                
+                <bufferAttribute
+                    attach="attributes-color"
+                    count={parameters.count}
+                    itemSize={3}
+                    array={colors}
+                />
+                
+                <bufferAttribute
+                    attach="attributes-aScale"
+                    count={parameters.count}
+                    itemSize={1}
+                    array={scales}
+                />
+                
+                <bufferAttribute
+                    attach="attributes-aRandomness"
+                    count={parameters.count}
+                    itemSize={3}
+                    array={randomness}
+                />
+            </bufferGeometry>
+            <shaderMaterial
+                ref={material}
+                fragmentShader={fragmentShader}
+                vertexShader={vertexShader}
+                depthWrite={false}
+                vertexColors={true}
+                blending={AdditiveBlending}
+                uniforms={uniforms}
             />
-            
-            <bufferAttribute
-                attach="attributes-color"
-                count={parameters.count}
-                itemSize={3}
-                array={colors}
-            />
-            
-            <bufferAttribute
-                attach="attributes-aScale"
-                count={parameters.count}
-                itemSize={1}
-                array={scales}
-            />
-            
-            <bufferAttribute
-                attach="attributes-aRandomness"
-                count={parameters.count}
-                itemSize={3}
-                array={randomness}
-            />
-        </bufferGeometry>
-        <shaderMaterial
-            ref={material}
-            fragmentShader={fragmentShader}
-            vertexShader={vertexShader}
-            depthWrite={false}
-            vertexColors={true}
-            blending={AdditiveBlending}
-            uniforms={uniforms}
-        />
-    </points>
+        </points>
+    </group>
 }
