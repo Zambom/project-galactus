@@ -1,5 +1,5 @@
-import { useContext, useLayoutEffect, useMemo, useRef } from "react"
-import { AdditiveBlending, Color, MathUtils, Object3D, Vector3 } from "three"
+import { useContext, useMemo, useRef } from "react"
+import { AdditiveBlending, Color, Object3D, Vector3 } from "three"
 import vertexShader from "../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../shaders/Galaxy/fragment.glsl"
 import { useFrame, useThree } from "@react-three/fiber"
@@ -9,7 +9,7 @@ import store from "../store"
 import GalaxyContext from "../contexts/Galaxy"
 import { Text } from "@react-three/drei"
 
-export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0], cameraControls }) {
+export default function Galaxy({ options, reference, position = [0, 0, 0], rotation = [0, 0, 0], cameraControls }) {
     const { setGalaxyInfo } = useContext(GalaxyContext)
 
     const { gl } = useThree()
@@ -108,6 +108,9 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
                 content: parameters.information.content
             })
 
+            store.accessEventFired = true
+            store.accessedUuid = reference.current.uuid
+
             cameraControls.current.enabled = false
             
             const position = new Vector3()
@@ -135,7 +138,7 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
         }
     }
 
-    return <group>
+    return <group ref={reference}>
         <mesh 
             ref={galaxy}
             position={position} 

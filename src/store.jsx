@@ -1,5 +1,7 @@
 const store = {
-    resetPositionEventFired: false
+    resetPositionEventFired: false,
+    accessEventFired: false,
+    accessedUuid: ''
 }
 
 export default store

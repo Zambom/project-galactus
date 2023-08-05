@@ -16,6 +16,12 @@ function App() {
 
   const cameraControls = useRef()
 
+  const galaxyReferences = []
+
+  for (let i = 0; i < galaxiesCount; i++) {
+    galaxyReferences.push(useRef())
+  }
+
   const galaxiesConfig = useMemo(() => {
     const configs = []
 
@@ -36,7 +42,8 @@ function App() {
   }, [])
 
   const galaxies = galaxiesConfig.map((config, index) => {
-    return <Galaxy 
+    return <Galaxy
+      reference={galaxyReferences[index]}
       key={index} 
       cameraControls={cameraControls}
       options={config.options}
@@ -48,9 +55,26 @@ function App() {
   const backBtn = document.getElementById("backBtn")
   const infoModal = document.getElementById("infoModal")
 
+  let updated = false
+
   useFrame((state) => {
+    if (store.accessEventFired) {
+      galaxyReferences.forEach(el => {
+        //el.current.visible = false
+        if (el.current.uuid !== store.accessedUuid) {
+          el.current.visible = false
+        }
+      })
+      
+      store.accessEventFired = false
+    }
+
     if (store.resetPositionEventFired) {
       const { camera } = state
+
+      galaxyReferences.forEach(el => {
+        el.current.visible = true
+      })
 
       toggleVisibility(infoModal)
 
