@@ -4,7 +4,6 @@ import vertexShader from "../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../shaders/Galaxy/fragment.glsl"
 import { useFrame, useThree } from "@react-three/fiber"
 import { gsap } from "gsap"
-import store from "../store"
 
 export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0], cameraControls }) {
     const { gl } = useThree()
@@ -161,6 +160,7 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
                     vertexColors={true}
                     blending={AdditiveBlending}
                     uniforms={uniforms}
+                    transparent
                 />
             </points>
         </group>
