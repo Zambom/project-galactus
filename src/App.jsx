@@ -5,6 +5,11 @@ import { useMemo, useRef } from 'react'
 import { generatePosition, generateRotation } from './utils/positioning'
 import { randomGalaxy } from './utils/randomizeElements'
 import { Perf } from 'r3f-perf'
+import { useFrame } from '@react-three/fiber'
+
+import store from './store'
+import { gsap } from 'gsap'
+import { toggleVisibility } from './utils/html'
 
 function App() {
   const galaxiesCount = 7
@@ -39,6 +44,36 @@ function App() {
       rotation={[config.rotation.x, config.rotation.y, config.rotation.z]}
     />
   })
+
+  useFrame((state) => {
+    if (store.resetPositionEventFired) {
+      const { camera } = state
+      const backBtn = document.getElementById("backBtn")
+      
+
+      gsap.to(camera.position, {
+        x: 0,
+        y: 0,
+        z: 0,
+        onComplete: () => {
+          cameraControls.current.enabled = true
+          cameraControls.current.reset()
+        }
+      })
+      gsap.to(camera.rotation, {
+        x: 0,
+        y: 0,
+        z: 0,
+        onComplete: () => {
+          camera.updateProjectionMatrix()
+          
+          toggleVisibility(backBtn)
+        }
+      })
+
+      store.resetPositionEventFired = false
+    }
+  }, [])
 
   return (
     <>

@@ -4,6 +4,7 @@ import vertexShader from "../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../shaders/Galaxy/fragment.glsl"
 import { useFrame, useThree } from "@react-three/fiber"
 import { gsap } from "gsap"
+import { toggleVisibility } from "../utils/html"
 
 export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0], cameraControls }) {
     const { gl } = useThree()
@@ -85,6 +86,8 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
     const clickEvent = (event) => {
         event.stopPropagation()
         if (galaxy.current && cameraControls.current) {
+            const backBtn = document.getElementById("backBtn")
+
             cameraControls.current.enabled = false
             
             const position = new Vector3()
@@ -96,6 +99,7 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
                 z: position.z,
                 onComplete: () => {
                     console.log(camera.position)
+                    toggleVisibility(backBtn)
                 }
             })
             gsap.to(camera.rotation, {

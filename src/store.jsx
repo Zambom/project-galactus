@@ -1,8 +1,5 @@
-import { Object3D } from "three";
-
 const store = {
-    animationStarted: false,
-    targetObj: new Object3D()
+    resetPositionEventFired: false,
 }
 
 export default store
