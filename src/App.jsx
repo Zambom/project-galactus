@@ -44,12 +44,15 @@ function App() {
       rotation={[config.rotation.x, config.rotation.y, config.rotation.z]}
     />
   })
+  
+  const backBtn = document.getElementById("backBtn")
+  const infoModal = document.getElementById("infoModal")
 
   useFrame((state) => {
     if (store.resetPositionEventFired) {
       const { camera } = state
-      const backBtn = document.getElementById("backBtn")
-      
+
+      toggleVisibility(infoModal)
 
       gsap.to(camera.position, {
         x: 0,

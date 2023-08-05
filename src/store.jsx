@@ -1,5 +1,5 @@
 const store = {
-    resetPositionEventFired: false,
+    resetPositionEventFired: false
 }
 
 export default store

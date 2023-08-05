@@ -1,12 +1,16 @@
-import { useMemo, useRef } from "react"
+import { useContext, useMemo, useRef } from "react"
 import { AdditiveBlending, Color, MathUtils, Object3D, Vector3 } from "three"
 import vertexShader from "../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../shaders/Galaxy/fragment.glsl"
 import { useFrame, useThree } from "@react-three/fiber"
 import { gsap } from "gsap"
 import { toggleVisibility } from "../utils/html"
+import store from "../store"
+import GalaxyContext from "../contexts/Galaxy"
 
 export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0], cameraControls }) {
+    const { setGalaxyInfo } = useContext(GalaxyContext)
+
     const { gl } = useThree()
 
     const galaxy = useRef()
@@ -26,7 +30,11 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
         speed: 0.2,
         direction: 1,
         insideColor: 0xff6030,
-        outsideColor: 0x1b3984
+        outsideColor: 0x1b3984,
+        information: {
+            title: 'Galáxia A',
+            content: '',
+        }
     }
 
     const parameters = { ...defaults, ...options }
@@ -82,11 +90,16 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
     }, [])
 
     const { camera } = useThree()
+    const backBtn = document.getElementById("backBtn")
+    const infoModal = document.getElementById("infoModal")
 
     const clickEvent = (event) => {
         event.stopPropagation()
-        if (galaxy.current && cameraControls.current) {
-            const backBtn = document.getElementById("backBtn")
+        if (galaxy.current && cameraControls.current.enabled) {
+            setGalaxyInfo({
+                title: parameters.information.title,
+                content: parameters.information.content
+            })
 
             cameraControls.current.enabled = false
             
@@ -98,8 +111,8 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
                 y: position.y, 
                 z: position.z,
                 onComplete: () => {
-                    console.log(camera.position)
                     toggleVisibility(backBtn)
+                    toggleVisibility(infoModal)
                 }
             })
             gsap.to(camera.rotation, {

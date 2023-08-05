@@ -1,4 +1,21 @@
-import { GALAXY_BOUND_COLORS, GALAXY_CORE_COLORS } from "./constants"
+import { GALAXY_BOUND_COLORS, GALAXY_CORE_COLORS, PLACEHOLDER_INFO_TEXT } from "./constants"
+
+export const randomName = (length) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    const charLength = characters.length
+
+    let result = ''
+
+    let counter = 0;
+    
+    while (counter < length) {
+        result = `${result}${characters.charAt(Math.floor(Math.random() * charLength))}`;
+        
+        counter += 1;
+    }
+
+    return result
+}
 
 export const randomGalaxy = () => {
     const coreFactor = Math.round(Math.random() * 6)
@@ -15,6 +32,10 @@ export const randomGalaxy = () => {
         speed,
         direction,
         insideColor,
-        outsideColor
+        outsideColor,
+        information: {
+            title: `Galaxy ${randomName(5)}`,
+            content: PLACEHOLDER_INFO_TEXT
+        }
     }
 }
