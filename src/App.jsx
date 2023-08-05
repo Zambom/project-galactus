@@ -1,7 +1,7 @@
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, CameraControls } from '@react-three/drei'
 import './App.css'
 import Galaxy from './components/Galaxy'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { generatePosition, generateRotation } from './utils/positioning'
 import { randomGalaxy } from './utils/randomizeElements'
 import { Perf } from 'r3f-perf'
@@ -11,6 +11,8 @@ import store from './store'
 
 function App() {
   const galaxiesCount = 7
+
+  const cameraControls = useRef()
 
   const galaxiesConfig = useMemo(() => {
     const configs = []
@@ -34,10 +36,11 @@ function App() {
   const galaxies = galaxiesConfig.map((config, index) => {
     return <Galaxy 
       key={index} 
+      cameraControls={cameraControls}
       options={config.options}
       position={[config.position.x, config.position.y, config.position.z]} 
       rotation={[config.rotation.x, config.rotation.y, config.rotation.z]}
-      //position={[0, 0, 0]}
+      //position={[0, 0, -20]}
       //rotation={[5.0762894106919285, 5.962762456976361, 5.542767988970172]}
     />
   })
@@ -62,7 +65,8 @@ function App() {
     <>
       <Perf position="top-left" />
 
-      <OrbitControls makeDefault />
+      {/*<CameraControls ref={cameraControls} />*/}
+      <OrbitControls ref={cameraControls} />
 
       {galaxies}
     </>

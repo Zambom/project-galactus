@@ -1,16 +1,19 @@
 import { useMemo, useRef } from "react"
-import { AdditiveBlending, Color, MathUtils } from "three"
+import { AdditiveBlending, Color, MathUtils, Object3D, Vector3 } from "three"
 import vertexShader from "../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../shaders/Galaxy/fragment.glsl"
 import { useFrame, useThree } from "@react-three/fiber"
 import { gsap } from "gsap"
 import store from "../store"
 
-export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0] }) {
+export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0], cameraControls }) {
     const { gl } = useThree()
 
     const galaxy = useRef()
     const material = useRef()
+    const cameraPosition = useRef()
+
+    const customCameraPosition = new Object3D()
 
     const defaults = {
         count: 200000,
@@ -82,14 +85,26 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
 
     const clickEvent = (event) => {
         event.stopPropagation()
-        console.log('galaxy clicked', camera)
-        if (galaxy.current) {
+        if (galaxy.current && cameraControls.current) {
+            cameraControls.current.enabled = false
+            
+            const position = new Vector3()
+            cameraPosition.current.getWorldPosition(position)
+
             gsap.to(camera.position, { 
-                x: galaxy.current.position.x, 
-                y: galaxy.current.position.y, 
-                z: galaxy.current.position.z,
+                x: position.x, 
+                y: position.y, 
+                z: position.z,
                 onComplete: () => {
-                    camera.lookAt(galaxy.current)
+                    console.log(camera.position)
+                }
+            })
+            gsap.to(camera.rotation, {
+                x: rotation[0],
+                y: rotation[1],
+                z: rotation[2],
+                onComplete: () => {
+                    camera.updateProjectionMatrix()
                 }
             })
         }
@@ -101,11 +116,13 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
             position={position} 
             rotation={rotation}
             onClick={clickEvent}
+            visible={false}
         >
             <boxGeometry args={[15, 2, 15]} />
-            <meshBasicMaterial color="red" opacity={0} transparent />
+            <meshBasicMaterial />
         </mesh>
         <group position={position} rotation={rotation}>
+            <primitive ref={cameraPosition} object={customCameraPosition} position={[0, 2, 8]} />
             <points>
                 <bufferGeometry>
                     <bufferAttribute
