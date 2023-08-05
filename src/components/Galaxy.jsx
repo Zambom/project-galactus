@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef } from "react"
+import { useContext, useLayoutEffect, useMemo, useRef } from "react"
 import { AdditiveBlending, Color, MathUtils, Object3D, Vector3 } from "three"
 import vertexShader from "../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../shaders/Galaxy/fragment.glsl"
@@ -7,6 +7,7 @@ import { gsap } from "gsap"
 import { toggleVisibility } from "../utils/html"
 import store from "../store"
 import GalaxyContext from "../contexts/Galaxy"
+import { Text } from "@react-three/drei"
 
 export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0, 0], cameraControls }) {
     const { setGalaxyInfo } = useContext(GalaxyContext)
@@ -16,6 +17,7 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
     const galaxy = useRef()
     const material = useRef()
     const cameraPosition = useRef()
+    const title = useRef()
 
     const customCameraPosition = new Object3D()
 
@@ -87,9 +89,14 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
 
     useFrame((state) => {
         material.current.uniforms.uTime.value = 50 + state.clock.elapsedTime
+
+        if (store.resetPositionEventFired) {
+            title.current.visible = true
+        }
     }, [])
 
     const { camera } = useThree()
+
     const backBtn = document.getElementById("backBtn")
     const infoModal = document.getElementById("infoModal")
 
@@ -105,6 +112,8 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
             
             const position = new Vector3()
             cameraPosition.current.getWorldPosition(position)
+
+            title.current.visible = false
 
             gsap.to(camera.position, { 
                 x: position.x, 
@@ -137,6 +146,9 @@ export default function Galaxy({ options, position = [0, 0, 0], rotation = [0, 0
             <boxGeometry args={[15, 2, 15]} />
             <meshBasicMaterial />
         </mesh>
+        <group position={position}>
+            <Text ref={title}>{parameters.information.title}</Text>
+        </group>
         <group position={position} rotation={rotation}>
             <primitive ref={cameraPosition} object={customCameraPosition} position={[0, 2, 8]} />
             <points>
