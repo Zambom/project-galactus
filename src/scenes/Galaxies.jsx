@@ -2,7 +2,6 @@ import { useReducer } from "react"
 import GalaxyReducer from "../reducers/Galaxy"
 import GalaxyContext from "../contexts/Galaxy"
 import Galaxies from '../pages/GalaxiesPage.jsx'
-import HtmlCanvas from "../components/HtmlCanvas"
 import { Canvas } from "@react-three/fiber"
 
 function GalaxiesScene() {
