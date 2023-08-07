@@ -1,12 +1,12 @@
 import { useContext, useMemo, useRef } from "react"
 import { AdditiveBlending, Color, Object3D, Vector3 } from "three"
-import vertexShader from "../shaders/Galaxy/vertex.glsl"
-import fragmentShader from "../shaders/Galaxy/fragment.glsl"
+import vertexShader from "../../shaders/Galaxy/vertex.glsl"
+import fragmentShader from "../../shaders/Galaxy/fragment.glsl"
 import { useFrame, useThree } from "@react-three/fiber"
 import { gsap } from "gsap"
-import { toggleVisibility } from "../utils/html"
-import store from "../store"
-import GalaxyContext from "../contexts/Galaxy"
+import { toggleVisibility } from "../../utils/html"
+import store from "../../store"
+import GalaxyContext from "../../contexts/Galaxy"
 import { Text } from "@react-three/drei"
 
 export default function Galaxy({ options, reference, position = [0, 0, 0], rotation = [0, 0, 0], cameraControls }) {

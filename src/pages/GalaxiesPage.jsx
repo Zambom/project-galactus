@@ -1,5 +1,5 @@
 import { OrbitControls } from '@react-three/drei'
-import Galaxy from '../components/Galaxy'
+import Galaxy from '../components/Galaxies/main'
 import { useMemo, useRef } from 'react'
 import { generatePosition, generateRotation } from '../utils/positioning'
 import { randomGalaxy } from '../utils/randomizeElements'
@@ -57,7 +57,6 @@ function Galaxies() {
   useFrame((state) => {
     if (store.accessEventFired) {
       galaxyReferences.forEach(el => {
-        //el.current.visible = false
         if (el.current.uuid !== store.accessedUuid) {
           el.current.visible = false
         }
