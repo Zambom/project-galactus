@@ -27,7 +27,7 @@ function Galaxies() {
     const positions = []
 
     for (let i = 0; i < galaxiesCount; i++) {
-      const pos = generatePosition(positions)
+      const pos = generatePosition(positions, 5, {x: 80, y: 30, z: 10, z_tweak: 2})
       positions.push(pos)
 
       const rotation = generateRotation()
