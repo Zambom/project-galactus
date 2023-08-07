@@ -1,17 +1,16 @@
 import { OrbitControls } from '@react-three/drei'
-import './App.css'
-import Galaxy from './components/Galaxy'
+import Galaxy from '../components/Galaxy'
 import { useMemo, useRef } from 'react'
-import { generatePosition, generateRotation } from './utils/positioning'
-import { randomGalaxy } from './utils/randomizeElements'
+import { generatePosition, generateRotation } from '../utils/positioning'
+import { randomGalaxy } from '../utils/randomizeElements'
 import { Perf } from 'r3f-perf'
 import { useFrame } from '@react-three/fiber'
 
-import store from './store'
+import store from '../store'
 import { gsap } from 'gsap'
-import { toggleVisibility } from './utils/html'
+import { toggleVisibility } from '../utils/html'
 
-function App() {
+function Galaxies() {
   const galaxiesCount = 7
 
   const cameraControls = useRef()
@@ -54,8 +53,6 @@ function App() {
   
   const backBtn = document.getElementById("backBtn")
   const infoModal = document.getElementById("infoModal")
-
-  let updated = false
 
   useFrame((state) => {
     if (store.accessEventFired) {
@@ -113,4 +110,4 @@ function App() {
   )
 }
 
-export default App
+export default Galaxies
