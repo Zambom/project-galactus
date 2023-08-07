@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import GalaxyContext from "../contexts/Galaxy"
+import GalaxyContext from "../../contexts/Galaxy"
 
 export default function InfoModal({ className }) {
     const { galaxyInfo } = useContext(GalaxyContext)

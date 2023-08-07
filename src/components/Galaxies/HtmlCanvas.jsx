@@ -1,4 +1,4 @@
-import store from '../store'
+import store from '../../store'
 import InfoModal from './InfoModal'
 
 export default function HtmlCanvas() {
