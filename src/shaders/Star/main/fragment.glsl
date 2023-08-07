@@ -36,6 +36,14 @@ float Fresnel(vec3 eyeVector, vec3 worldNormal) {
     return pow(1.0 + dot(eyeVector, worldNormal), 3.0);
 }
 
+vec4 fromLinear(vec4 linearRGB) {
+    bvec3 cutoff = lessThan(linearRGB.rgb, vec3(0.0031308));
+    vec3 higher = vec3(1.055) * pow(linearRGB.rgb, vec3(1.0/2.4)) - vec3(0.055);
+    vec3 lower = linearRGB.rgb * vec3(12.92);
+
+    return vec4(mix(higher, lower, cutoff), linearRGB.a);
+}
+
 void main()
 {
     float brightness = render() * 4.0 + 0.5;
@@ -46,5 +54,5 @@ void main()
     float intensity = 1.55 - dot(vNormal, vec3(0.0, 0.0, 1.0));
     vec3 atmosphere = color * pow(intensity, 1.5);
 
-    gl_FragColor = vec4(color + atmosphere, 1.0);
+    gl_FragColor = fromLinear(vec4(color + atmosphere, 1.0));
 }

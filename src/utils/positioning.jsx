@@ -20,19 +20,19 @@ export const testPosition = (positions, pos, dist) => {
     return true
 }
 
-export const generatePosition = (positions) => {
+export const generatePosition = (positions, minDist = 5, factors = { x: 50, y: 20, z: 100, z_tweak: 1 }) => {
     let point = new Vector3()
     let iterations = 0
 
     do {
-        let x = (Math.random() - 0.5) * 50
-        let y = (Math.random() - 0.5) * 20
-        let z = (Math.random() - 1) * 40
+        let x = (Math.random() - 0.5) * factors.x
+        let y = (Math.random() - 0.5) * factors.y
+        let z = (Math.random() - factors.z_tweak) * factors.z
 
         point.set(x, y, z)
 
         iterations += 1
-    } while (!testPosition(positions, point, 5) || iterations < 1000)
+    } while (!testPosition(positions, point, minDist) || iterations < 1000)
 
     return point
 }

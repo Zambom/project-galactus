@@ -1,3 +1,4 @@
+import { Vector3 } from "three"
 import { GALAXY_BOUND_COLORS, GALAXY_CORE_COLORS, PLACEHOLDER_INFO_TEXT } from "./constants"
 
 export const randomName = (length) => {
@@ -35,6 +36,22 @@ export const randomGalaxy = () => {
         outsideColor,
         information: {
             title: `Galaxy ${randomName(5)}`,
+            content: PLACEHOLDER_INFO_TEXT
+        }
+    }
+}
+
+export const randomStar = () => {
+    const r_factor = Math.round((Math.random() + 1) * 3)
+    const g_factor = Math.round((Math.random() + 1) * 3)
+    const b_factor = Math.round((Math.random() + 1) * 3)
+
+    const colorFactors = new Vector3(r_factor, g_factor, b_factor)
+
+    return {
+        colorFactors,
+        information: {
+            title: `Star ${randomName(6)}`,
             content: PLACEHOLDER_INFO_TEXT
         }
     }

@@ -7,14 +7,23 @@ import starFragmentShader from '../../shaders/Star/main/fragment.glsl';
 import atmosphereVertexShader from '../../shaders/Star/atmosphere/vertex.glsl';
 import atmosphereFragmentShader from '../../shaders/Star/atmosphere/fragment.glsl';
 
-export default function Star({texture, position = [0, 0, 0]}) {
+export default function Star({options, reference, texture, position = [0, 0, 0]}) {
     const globe = useRef()
     const atmosphere = useRef()
+
+    const defaults = {
+        colorFactors: new Vector3(1.0, 2.0, 4.0),
+        information: {
+            title: 'Estrela A',
+            content: '',
+        }
+    }
+    const parameters = { ...defaults, ...options }
 
     const uniforms = useMemo(() => ({
         uTime: { value: 0 },
         uTexture: { value: null },
-        uColorFactors: { value: new Vector3(2.0, 2.0, 1.0) }
+        uColorFactors: { value: parameters.colorFactors }
     }), [])
 
     useLayoutEffect(() => {
@@ -31,7 +40,7 @@ export default function Star({texture, position = [0, 0, 0]}) {
 
     return (
         <>
-            <group position={position}>
+            <group ref={reference} position={position}>
                 <mesh ref={globe}>
                     <sphereGeometry args={[5, 32, 32]} />
                     <shaderMaterial 

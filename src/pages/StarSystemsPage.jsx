@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef } from "react"
 import { Perf } from "r3f-perf"
-import { DoubleSide, Scene } from "three"
+import { DoubleSide, Scene, Vector3 } from "three"
 import { createPortal, useFrame } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 
@@ -9,8 +9,35 @@ import { generateCustomTexture } from "../utils/textures"
 
 import texVertexShader from '../shaders/Star/texture/vertex.glsl';
 import texFragmentShader from '../shaders/Star/texture/fragment.glsl';
+import { generatePosition } from "../utils/positioning"
+import { randomStar } from "../utils/randomizeElements"
 
 function StarSystems() {
+    const starsCount = 10
+
+    const starReferences = []
+
+    for (let i = 0; i < starsCount; i++) {
+        starReferences.push(useRef())
+    }
+
+    const starsConfig = useMemo(() => {
+        const configs = []
+
+        const positions = []
+
+        for (let i = 0; i < starsCount; i++) {
+            const pos = generatePosition(positions, 7, { x: 400, y: 100, z: 100, z_tweak: 2 })
+            positions.push(pos)
+
+            const options = randomStar()
+
+            configs.push({ options, position: pos })
+        }
+
+        return configs
+    }, [])
+
     const cameraControls = useRef()
     const texMaterial = useRef()
 
@@ -21,6 +48,16 @@ function StarSystems() {
     const texUniforms = useMemo(() => ({
         uTime: { value: 0 },
     }), [])
+
+    const stars = starsConfig.map((config, index) => {
+        return <Star
+            reference={starReferences[index]}
+            key={index}
+            options={config.options}
+            texture={starTexture}
+            position={[config.position.x,config.position.y,config.position.z]}
+        />
+    })
 
     useFrame((state) => {
         const { clock } = state
@@ -52,8 +89,7 @@ function StarSystems() {
 
             <OrbitControls ref={cameraControls} />
 
-            <Star texture={starTexture} position={[10, 0, -20]} />
-            <Star texture={starTexture} position={[-10, 0, -20]} />
+            {stars}
         </>
     )
 }
