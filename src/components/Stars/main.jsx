@@ -49,6 +49,10 @@ export default function Star({options, reference, texture, position = [0, 0, 0],
         globe.current.material.uniforms.uTexture.value = texture
 
         globe.current.material.uniforms.uTime.value = clock.elapsedTime
+
+        if (store.resetPositionEventFired) {
+            title.current.visible = true
+        }
     }, [])
 
     const clickEvent = (event) => {
