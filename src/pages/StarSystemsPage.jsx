@@ -1,6 +1,6 @@
-import { useLayoutEffect, useMemo, useRef } from "react"
+import { useMemo, useRef } from "react"
 import { Perf } from "r3f-perf"
-import { DoubleSide, Scene, Vector3 } from "three"
+import { DoubleSide, Scene } from "three"
 import { createPortal, useFrame } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 
@@ -11,9 +11,15 @@ import texVertexShader from '../shaders/Star/texture/vertex.glsl';
 import texFragmentShader from '../shaders/Star/texture/fragment.glsl';
 import { generatePosition } from "../utils/positioning"
 import { randomStar } from "../utils/randomizeElements"
+import store from "../store"
+import { toggleVisibility } from "../utils/html"
+import { gsap } from "gsap"
 
 function StarSystems() {
     const starsCount = 10
+
+    const backBtn = document.getElementById("backBtn")
+    const infoModal = document.getElementById("infoModal")
 
     const starReferences = []
 
@@ -56,15 +62,48 @@ function StarSystems() {
             options={config.options}
             texture={starTexture}
             position={[config.position.x,config.position.y,config.position.z]}
+            cameraControls={cameraControls}
         />
     })
 
     useFrame((state) => {
-        const { clock } = state
+        const { camera, clock } = state
 
         texMaterial.current.uniforms.uTime.value = clock.elapsedTime
 
         update()
+
+        if (store.accessEventFired) {
+            starReferences.forEach(el => {
+                if (el.current.uuid !== store.accessedUuid) {
+                    el.current.visible = false
+                }
+            })
+
+            store.accessEventFired = false
+        }
+
+        if (store.resetPositionEventFired) {
+            starReferences.forEach(el => {
+                el.current.visible = true
+            })
+
+            toggleVisibility(infoModal)
+
+            gsap.to(camera.position, {
+                x: 0,
+                y: 0,
+                z: 0,
+                onComplete: () => {
+                    cameraControls.current.enabled = true
+                    cameraControls.current.reset()
+
+                    toggleVisibility(backBtn)
+                }
+            })
+
+            store.resetPositionEventFired = false
+        }
     }, [])
 
     return (
