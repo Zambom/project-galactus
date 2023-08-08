@@ -1,9 +1,9 @@
 import { useFrame } from "@react-three/fiber"
+import { Vector3 } from "three"
 import { useLayoutEffect, useMemo, useRef } from "react"
 
 import vertexShader from "../../shaders/Planet/rocky/vertex.glsl"
-import fragmentShader from "../../shaders/Planet/rocky/fragment.glsl"
-import { Vector3 } from "three"
+import fragmentShader from "../../shaders/Planet/gassy/fragment.glsl"
 
 export default function Planet() {
     const mesh = useRef()
