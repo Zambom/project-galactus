@@ -1,12 +1,16 @@
 import { useFrame } from "@react-three/fiber"
-import { Vector3 } from "three"
+import { DoubleSide, Vector3 } from "three"
 import { useLayoutEffect, useMemo, useRef } from "react"
 
 import vertexShader from "../../shaders/Planet/gassy/vertex.glsl"
 import fragmentShader from "../../shaders/Planet/gassy/fragment.glsl"
 
+import vertexRingShader from "../../shaders/Planet/rings/vertex.glsl"
+import fragmentRingShader from "../../shaders/Planet/rings/fragment.glsl"
+
 export default function Planet() {
     const mesh = useRef()
+    const rings = useRef()
 
     const uniforms = useMemo(() => ({
         uTime: { value: 0 },
@@ -29,8 +33,8 @@ export default function Planet() {
     })
 
     return (
-        <>
-            <mesh ref={mesh} position={[0, 0, -5]}>
+        <group position={[0, 0, -5]} rotation={[0, 0.2, 0.5]}>
+            <mesh ref={mesh} visible={true}>
                 <sphereGeometry args={[5, 32, 32]} />
                 <shaderMaterial 
                     uniforms={uniforms}
@@ -39,6 +43,16 @@ export default function Planet() {
                     transparent
                 />
             </mesh>
-        </>
+            <mesh ref={rings} rotation-x={Math.PI * 0.5} scale={20}>
+                <planeGeometry />
+                <shaderMaterial
+                    uniforms={uniforms}
+                    vertexShader={vertexRingShader}
+                    fragmentShader={fragmentRingShader}
+                    side={DoubleSide}
+                    transparent={true}
+                />
+            </mesh>
+        </group>
     )
 }
