@@ -1,6 +1,6 @@
 import { useFrame } from "@react-three/fiber"
 import { DoubleSide, Vector3 } from "three"
-import { useLayoutEffect, useMemo, useRef } from "react"
+import { useMemo, useRef } from "react"
 
 import vertexShader from "../../shaders/Planet/gassy/vertex.glsl"
 import fragmentShader from "../../shaders/Planet/gassy/fragment.glsl"
@@ -20,9 +20,11 @@ export default function Planet() {
         uPeakColor: { value: new Vector3(0.42, 0.4, 0.42) },
     }), [])
 
-    useLayoutEffect(() => {
-        //mesh.current.rotation.z += 5
-    }, [])
+    const rUniforms = useMemo(() => ({
+        uOpacity: { value: 1.0 },
+        uInnerColor: { value: new Vector3(0.66, 0.38, 0.6) },
+        uOuterColor: { value: new Vector3(0.33, 0.22, 0.47) },
+    }), [])
 
     useFrame((state) => {
         const { clock } = state
@@ -46,7 +48,7 @@ export default function Planet() {
             <mesh ref={rings} rotation-x={Math.PI * 0.5} scale={20}>
                 <planeGeometry />
                 <shaderMaterial
-                    uniforms={uniforms}
+                    uniforms={rUniforms}
                     vertexShader={vertexRingShader}
                     fragmentShader={fragmentRingShader}
                     side={DoubleSide}
