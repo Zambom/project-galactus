@@ -1,6 +1,11 @@
 precision mediump float;
 
 uniform float uTime;
+uniform float uStrips;
+uniform vec3 uContrast;
+uniform vec3 uBrightness;
+uniform vec3 uOscilation;
+uniform vec3 uPhase;
 
 varying vec3 vPosition;
 
@@ -139,15 +144,10 @@ vec3 pallete(float t, vec3 a, vec3 b, vec3 c, vec3 d) {
 
 void main()
 {
-    float nStripes = 0.25;
-    vec3 a = vec3(0.8, 0.5, 0.4); // contrast
-    vec3 b = vec3(0.2, 0.4, 0.2); // brightness
-    vec3 c = vec3(2.0, 1.0, 1.0); // oscilation
-    vec3 d = vec3(0.0, 0.25, 0.25); // phase
-
     float noise = fbm(vec4(vPosition * 0.3, uTime * 0.05));
 
-    vec3 color = pallete((vPosition.y + noise * 0.25) * nStripes, a, b, c, d);
+    vec3 color = pallete((vPosition.y + noise * 0.25) * uStrips, uContrast, uBrightness, uOscilation, uPhase);
+
 
     gl_FragColor = vec4(color, 1.0);
 }

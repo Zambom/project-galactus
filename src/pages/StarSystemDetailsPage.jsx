@@ -9,7 +9,7 @@ function StarSystemDetails() {
 
             <OrbitControls />
 
-            <Planet />
+            <Planet options={{ type: 0, hasRings: 1 }} />
         </>
     )
 }

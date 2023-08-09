@@ -135,5 +135,5 @@ void main()
 
     vec3 color = scalarField(sphericalCoord.x, sphericalCoord.y, sphericalCoord.z);
 
-    gl_FragColor = vec4(color.x, color.y, color.z, 1.0);
+    gl_FragColor = vec4(color, 1.0);
 }
