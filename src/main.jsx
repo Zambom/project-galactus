@@ -6,22 +6,35 @@ import StarSystemsScene from './scenes/StarSystems.jsx'
 import StarSystemDetailsScene from './scenes/StarSystemDetails.jsx'
 
 import './index.css'
-import StarReducer from './reducers/Star.jsx'
+
+import GalaxyContext from './contexts/Galaxy.jsx'
+import GalaxyReducer from './reducers/Galaxy.jsx'
+
 import StarContext from './contexts/Star.jsx'
+import StarReducer from './reducers/Star.jsx'
+
+import PlanetContext from './contexts/Planet.jsx'
+import PlanetReducer from './reducers/Planet.jsx'
 
 function Router() {
+  const [galaxyInfo, setGalaxyInfo] = useReducer(GalaxyReducer, {})
   const [starInfo, setStarInfo] = useReducer(StarReducer, {})
+  const [planetInfo, setPlanetInfo] = useReducer(PlanetReducer, {})
 
   return (
-    <StarContext.Provider value={{ starInfo, setStarInfo}}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<GalaxiesScene />} />
-            <Route path="/star-systems" element={<StarSystemsScene />} />
-            <Route path="/star-system-details" element={<StarSystemDetailsScene />} />
-        </Routes>
-      </BrowserRouter>
-    </StarContext.Provider>
+    <GalaxyContext.Provider value={{ galaxyInfo, setGalaxyInfo }}>
+      <StarContext.Provider value={{ starInfo, setStarInfo}}>
+        <PlanetContext.Provider value={{ planetInfo, setPlanetInfo }}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<GalaxiesScene />} />
+                <Route path="/star-systems" element={<StarSystemsScene />} />
+                <Route path="/star-system-details" element={<StarSystemDetailsScene />} />
+            </Routes>
+          </BrowserRouter>
+        </PlanetContext.Provider>
+      </StarContext.Provider>
+    </GalaxyContext.Provider>
   )
 }
 
