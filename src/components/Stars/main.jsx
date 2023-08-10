@@ -25,6 +25,7 @@ export default function Star({options, reference, texture, position = [0, 0, 0],
     const infoModal = document.getElementById("infoModal")
 
     const defaults = {
+        scale: 1.0,
         colorFactors: new Vector3(1.0, 2.0, 4.0),
         information: {
             title: 'Estrela A',
@@ -91,7 +92,7 @@ export default function Star({options, reference, texture, position = [0, 0, 0],
 
     return (
         <>
-            <group ref={reference} position={position}>
+            <group ref={reference} position={position} scale={parameters.scale}>
                 <Text ref={title} position={[0, 7, 0]} scale={2.5}>{parameters.information.title}</Text>
                 <mesh ref={globe} onClick={clickEvent}>
                     <sphereGeometry args={[5, 32, 32]} />

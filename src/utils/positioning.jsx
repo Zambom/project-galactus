@@ -70,7 +70,7 @@ export const generateOrbit = (orbits, minDist) => {
     let iterations = 0
 
     do {
-        orbit = Math.max(minDist * 2, ((Math.random() - 0.5) * 100) * minDist)
+        orbit = Math.max(minDist * 1.5, ((Math.random() - 0.5) * 90) * minDist)
 
         iterations += 1
     } while(!testOrbit(orbits, orbit, minDist) || iterations < 1000)

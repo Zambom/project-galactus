@@ -31,12 +31,15 @@ function StarSystemDetails() {
         orbitsReferences.push(useRef())
     }
 
+    const starOptions = randomStar()
+    starOptions.scale = Math.max(1.5, Math.random() * 5.0)
+
     const planetsConfig = useMemo(() => {
         const configs = []
-        const orbits = [-1.5]
+        const orbits = [5 * starOptions.scale]
 
         for (let i = 0; i < planetsCount; i++) {
-            const options = randomPlanet(5, orbits)
+            const options = randomPlanet(6, orbits)
 
             orbits.push(options.orbit)
 
@@ -47,8 +50,6 @@ function StarSystemDetails() {
 
         return configs
     }, [])
-
-    const starOptions = randomStar()
 
     const texMaterial = useRef()
 
