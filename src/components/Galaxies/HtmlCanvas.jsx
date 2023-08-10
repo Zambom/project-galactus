@@ -1,4 +1,5 @@
 import store from '../../store'
+import ControlsInfoModal from '../General/ControlsInfoModal'
 import InfoModal from './InfoModal'
 
 export default function HtmlCanvas() {
@@ -11,6 +12,8 @@ export default function HtmlCanvas() {
             <button id="backBtn" className="btn btn-back invisible" onClick={handleClick}>Voltar</button>
 
             <InfoModal className="invisible" />
+
+            <ControlsInfoModal className="" />
         </div>
     )
 }

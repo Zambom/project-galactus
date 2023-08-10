@@ -1,4 +1,4 @@
-import { useContext, useMemo, useRef } from "react"
+import { useContext, useLayoutEffect, useMemo, useRef } from "react"
 import { AdditiveBlending, Color, Object3D, Vector3 } from "three"
 import vertexShader from "../../shaders/Galaxy/vertex.glsl"
 import fragmentShader from "../../shaders/Galaxy/fragment.glsl"
@@ -86,6 +86,16 @@ export default function Galaxy({ options, reference, position = [0, 0, 0], rotat
         uDirection: { value: parameters.direction },
         uSize: { value: 30 * gl.getPixelRatio() }
     }), [])
+
+    useLayoutEffect(() => {
+        const modal = document.getElementById('controlsModal')
+
+        setTimeout(() => {
+            if (!modal.classList.contains("invisible")) {
+                toggleVisibility(document.getElementById('controlsModal'))
+            }
+        }, 5000)
+    }, [])
 
     useFrame((state) => {
         material.current.uniforms.uTime.value = 50 + state.clock.elapsedTime

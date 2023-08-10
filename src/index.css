@@ -28,6 +28,19 @@ html, body, #root, #htmlCanvas {
   top: 8.3rem;
   left: 1rem;
 }
+#htmlCanvas .btn.btn-help {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  padding: 0.5rem 1rem;
+}
+#htmlCanvas .btn.btn-close {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+}
 #htmlCanvas .modal {
   position: absolute;
   top: 1rem;
@@ -41,6 +54,7 @@ html, body, #root, #htmlCanvas {
   flex-direction: column;
   color: black;
   font-family: Arial, Helvetica, sans-serif;
+  z-index: 3;
 }
 #htmlCanvas .modal > header {
   text-align: center;
@@ -56,4 +70,19 @@ html, body, #root, #htmlCanvas {
   justify-content: center;
   width: 100%;
   padding: .5rem 0;
+}
+
+#htmlCanvas .container {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+}
+
+
+
+#htmlCanvas .modal#controlsModal {
+  height: 200px;
+  top: 35%;
+  right: 30%;
 }
