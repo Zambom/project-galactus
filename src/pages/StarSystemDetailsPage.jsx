@@ -86,7 +86,9 @@ function StarSystemDetails() {
                 }
             })
 
-            star.current.visible = false
+            if (star.current.uuid !== store.accessedUuid) {
+                star.current.visible = false
+            }
 
             store.accessEventFired = false
         }
@@ -102,8 +104,8 @@ function StarSystemDetails() {
 
             gsap.to(camera.position,  {
                 x: 0,
-                y: 0,
-                z: 0,
+                y: 35,
+                z: 100,
                 onComplete: () => {
                     cameraControls.current.enabled = true
                     cameraControls.current.reset()

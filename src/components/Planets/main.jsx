@@ -14,12 +14,14 @@ import PlanetContext from "../../contexts/Planet"
 import store from "../../store"
 import { gsap } from "gsap"
 import { toggleVisibility } from "../../utils/html"
+import { Text } from "@react-three/drei"
 
 export default function Planet({ reference, options, cameraControls }) {
     const { setPlanetInfo } = useContext(PlanetContext)
     
     const globe = useRef()
     const rings = useRef()
+    const title = useRef()
 
     const { camera } = useThree()
 
@@ -90,6 +92,10 @@ export default function Planet({ reference, options, cameraControls }) {
         globe.current.material.uniforms.uTime.value = clock.getElapsedTime()
 
         globe.current.rotation.y += parameters.rotation
+
+        if (store.resetPositionEventFired) {
+            title.current.visible = true
+        }
     })
 
     const clickEvent = (event) => {
@@ -105,6 +111,8 @@ export default function Planet({ reference, options, cameraControls }) {
             store.individualView = true
             store.accessedUuid = reference.current.uuid
 
+            title.current.visible = false
+
             setTimeout(() => {
                 const position = new Vector3()
                 globe.current.getWorldPosition(position)
@@ -114,7 +122,7 @@ export default function Planet({ reference, options, cameraControls }) {
                 gsap.to(camera.position, {
                     x: position.x,
                     y: position.y,
-                    z: position.z + 15.0,
+                    z: position.z + 12.0,
                     onComplete: () => {
                         camera.lookAt(position)
                         camera.updateProjectionMatrix()
@@ -128,26 +136,29 @@ export default function Planet({ reference, options, cameraControls }) {
     }
 
     return (
-        <group ref={reference} position={[parameters.orbit, 0, -5]} rotation={[0.01, 0.2, parameters.inclination]} scale={parameters.scale}>
-            <mesh ref={globe} onClick={clickEvent}>
-                <sphereGeometry args={[5, 32, 32]} />
-                <shaderMaterial 
-                    uniforms={uniforms}
-                    vertexShader={vertexShader}
-                    fragmentShader={fragmentShader}
-                    transparent
-                />
-            </mesh>
-            <mesh ref={rings} rotation-x={Math.PI * 0.5} scale={parameters.ringsScale} visible={parameters.hasRings == 1}>
-                <planeGeometry />
-                <shaderMaterial
-                    uniforms={rUniforms}
-                    vertexShader={vertexRingShader}
-                    fragmentShader={fragmentRingShader}
-                    side={DoubleSide}
-                    transparent={true}
-                />
-            </mesh>
+        <group ref={reference} position={[parameters.orbit, 0, -5]}>
+            <Text ref={title} position-y={8} scale={2.5}>{parameters.information.title}</Text>
+            <group rotation={[0.01, 0.2, parameters.inclination]} scale={parameters.scale}>
+                <mesh ref={globe} onClick={clickEvent}>
+                    <sphereGeometry args={[5, 32, 32]} />
+                    <shaderMaterial 
+                        uniforms={uniforms}
+                        vertexShader={vertexShader}
+                        fragmentShader={fragmentShader}
+                        transparent
+                    />
+                </mesh>
+                <mesh ref={rings} rotation-x={Math.PI * 0.5} scale={parameters.ringsScale} visible={parameters.hasRings == 1}>
+                    <planeGeometry />
+                    <shaderMaterial
+                        uniforms={rUniforms}
+                        vertexShader={vertexRingShader}
+                        fragmentShader={fragmentRingShader}
+                        side={DoubleSide}
+                        transparent={true}
+                    />
+                </mesh>
+            </group>
         </group>
     )
 }

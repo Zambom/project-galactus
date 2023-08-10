@@ -15,7 +15,11 @@ function StarSystemDetailsScene() {
         <StarContext.Provider value={{ starInfo, setStarInfo}}>
             <PlanetContext.Provider value={{ planetInfo, setPlanetInfo }}>
                 <HtmlCanvas />
-                <Canvas>
+                <Canvas
+                    camera={{
+                        position: [0, 35, 100]
+                    }}
+                >
                     <StarSystemDetails />
                 </Canvas>
             </PlanetContext.Provider>

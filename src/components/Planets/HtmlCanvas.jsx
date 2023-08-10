@@ -1,10 +1,16 @@
+import { useContext } from 'react'
 import store from '../../store'
 import InfoModal from './InfoModal'
+import PlanetContext from '../../contexts/Planet'
 
 export default function HtmlCanvas() {
+    const { setPlanetInfo } = useContext(PlanetContext)
+
     const handleClick = () => {
         store.resetPositionEventFired = true
         store.individualView = false
+
+        setPlanetInfo({})
     }
 
     return (
