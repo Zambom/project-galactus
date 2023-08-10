@@ -17,6 +17,7 @@ export default function Planet({ options }) {
 
     const defaults = {
         type: 0,
+        orbit: 10,
         hasRings: 0,
         scale: 1.0,
         inclination: 0.0,
@@ -81,7 +82,7 @@ export default function Planet({ options }) {
     })
 
     return (
-        <group position={[0, 0, -5]} rotation={[0.01, 0.2, parameters.inclination]} scale={parameters.scale}>
+        <group position={[parameters.orbit, 0, -5]} rotation={[0.01, 0.2, parameters.inclination]} scale={parameters.scale}>
             <mesh ref={mesh} visible={true}>
                 <sphereGeometry args={[5, 32, 32]} />
                 <shaderMaterial 

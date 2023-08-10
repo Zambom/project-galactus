@@ -65,9 +65,11 @@ export const randomStar = () => {
     }
 }
 
-export const randomPlanet = () => {
+export const randomPlanet = (starSize = 5) => {
+    const orbit = Math.max(starSize * 2, ((Math.random() - 0.5) * 100) * starSize)
     return {
         type: Math.round(Math.random()),
+        orbit,
         hasRings: Math.round(Math.random()),
         inclination: (Math.random() - 0.5) * Math.PI,
         rotation: (Math.random() - 0.5) / 1000,
