@@ -33,7 +33,11 @@ export default function Planet({ options }) {
         oscilation: new Vector3(2.0, 1.0, 1.0),
         phase: new Vector3(0.0, 0.25, 0.25),
         ringInnerColor: new Vector3(0.66, 0.38, 0.6),
-        ringOuterColor: new Vector3(0.33, 0.22, 0.47)
+        ringOuterColor: new Vector3(0.33, 0.22, 0.47),
+        information: {
+            title: 'Planeta A',
+            content: ''
+        }
     }
 
     const parameters = { ...defaults, ...options }

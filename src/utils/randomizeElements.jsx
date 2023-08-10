@@ -18,6 +18,14 @@ export const randomName = (length) => {
     return result
 }
 
+export const randomColor = () => {
+    const r = Math.random()
+    const g = Math.random()
+    const b = Math.random()
+
+    return new Vector3(r, g, b)
+}
+
 export const randomGalaxy = () => {
     const coreFactor = Math.round(Math.random() * 6)
     const boundFactor = Math.round(Math.random() * 6)
@@ -56,3 +64,29 @@ export const randomStar = () => {
         }
     }
 }
+
+export const randomPlanet = () => {
+    return {
+        type: Math.round(Math.random()),
+        hasRings: Math.round(Math.random()),
+        inclination: (Math.random() - 0.5) * Math.PI,
+        rotation: (Math.random() - 0.5) / 1000,
+        rockyType: Math.round(Math.random() * 5.0),
+        gassyStrips: Math.random(),
+        ringsBaseOpacity: Math.random() + 0.01,
+        waterColor: randomColor(),
+        landColor: randomColor(),
+        peakColor: randomColor(),
+        contrast: randomColor(),
+        brightness: randomColor(),
+        oscilation: randomColor(),
+        phase: randomColor(),
+        ringInnerColor: randomColor(),
+        ringOuterColor: randomColor(),
+        information: {
+            title: `Planet ${randomName(10)}`,
+            content: PLACEHOLDER_INFO_TEXT
+        }
+    }
+}
+
