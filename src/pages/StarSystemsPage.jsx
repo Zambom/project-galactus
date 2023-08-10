@@ -124,7 +124,7 @@ function StarSystems() {
                 texScene
             )}
 
-            <Perf position="top-left" />
+            {/*<Perf position="top-left" />*/}
 
             <OrbitControls ref={cameraControls} />
 

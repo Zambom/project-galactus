@@ -150,7 +150,8 @@ function StarSystemDetails() {
                 </>,
                 texScene
             )}
-            <Perf position="top-left" />
+            
+            {/*<Perf position="top-left" />*/}
 
             <OrbitControls ref={cameraControls} />
 
