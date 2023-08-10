@@ -12,11 +12,36 @@ import texVertexShader from '../shaders/Star/texture/vertex.glsl';
 import texFragmentShader from '../shaders/Star/texture/fragment.glsl';
 
 function StarSystemDetails() {
+    const planetsCount = 10
+
     const star = useRef()
     const cameraControls = useRef()
     const planetOrbit = useRef()
 
-    const options = randomPlanet()
+    const planetsReferences = []
+    const orbitsReferences = []
+
+    for (let i = 0; i < planetsCount; i++) {
+        planetsReferences.push(useRef())
+        orbitsReferences.push(useRef())
+    }
+
+    const planetsConfig = useMemo(() => {
+        const configs = []
+        const orbits = [-1.5]
+
+        for (let i = 0; i < planetsCount; i++) {
+            const options = randomPlanet(5, orbits)
+
+            orbits.push(options.orbit)
+
+            const translationSpeed = (Math.random() + 0.5) / (options.orbit * 1.1)
+
+            configs.push({ options, translationSpeed })
+        }
+
+        return configs
+    }, [])
 
     const starOptions = randomStar()
 
@@ -30,6 +55,12 @@ function StarSystemDetails() {
         uTime: { value: 0 },
     }), [])
 
+    const planets = planetsConfig.map((config, index) => {
+        return <group key={index} ref={orbitsReferences[index]} position={[0, 0, -10]}>
+            <Planet options={config.options} />
+        </group>
+    })
+
     useFrame((state) => {
         const { camera, clock } = state
 
@@ -37,7 +68,9 @@ function StarSystemDetails() {
 
         update()
 
-        planetOrbit.current.rotation.y += 0.005
+        orbitsReferences.forEach((el, index) => {
+            el.current.rotation.y += planetsConfig[index].translationSpeed
+        })
     }, [])
 
     return (
@@ -69,9 +102,7 @@ function StarSystemDetails() {
                 cameraControls={cameraControls}
             />
 
-            <group ref={planetOrbit} position={[0, 0, -10]}>
-                <Planet options={options} />
-            </group>
+            {planets}
         </>
     )
 }

@@ -20,6 +20,22 @@ export const testPosition = (positions, pos, dist) => {
     return true
 }
 
+export const testOrbit = (orbits, orbit, size) => {
+    if (orbits.length > 0) {
+        const minDist = size * 3
+
+        for (let i = 0; i < orbits.length; i++) {
+            const dist = Math.abs(orbits[i] - orbit)
+
+            if (dist < minDist) {
+                return false
+            }
+        }
+    }
+
+    return true
+}
+
 export const generatePosition = (positions, minDist = 5, factors = { x: 50, y: 20, z: 100, z_tweak: 1 }) => {
     let point = new Vector3()
     let iterations = 0
@@ -47,4 +63,17 @@ export const generateRotation = () => {
     rot.set(x, y, z)
 
     return rot
+}
+
+export const generateOrbit = (orbits, minDist) => {
+    let orbit = 0
+    let iterations = 0
+
+    do {
+        orbit = Math.max(minDist * 2, ((Math.random() - 0.5) * 100) * minDist)
+
+        iterations += 1
+    } while(!testOrbit(orbits, orbit, minDist) || iterations < 1000)
+
+    return orbit
 }

@@ -1,5 +1,6 @@
 import { Vector3 } from "three"
 import { GALAXY_BOUND_COLORS, GALAXY_CORE_COLORS, PLACEHOLDER_INFO_TEXT } from "./constants"
+import { generateOrbit } from "./positioning"
 
 export const randomName = (length) => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -65,8 +66,8 @@ export const randomStar = () => {
     }
 }
 
-export const randomPlanet = (starSize = 5) => {
-    const orbit = Math.max(starSize * 2, ((Math.random() - 0.5) * 100) * starSize)
+export const randomPlanet = (starSize = 5, orbits) => {
+    const orbit = generateOrbit(orbits, starSize)
     return {
         type: Math.round(Math.random()),
         orbit,
