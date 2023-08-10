@@ -6,15 +6,15 @@ import StarReducer from "../reducers/Star"
 import HtmlCanvas from "../components/Stars/HtmlCanvas"
 
 function StarSystemsScene() {
-    const [starInfo, setStarInfo] = useReducer(StarReducer, {title: '', content: ''})
+    const [starInfo, setStarInfo] = useReducer(StarReducer, {})
 
     return (
-        <StarContext.Provider value={{ starInfo, setStarInfo}}>
+        <>
             <HtmlCanvas />
             <Canvas>
                 <StarSystems />
             </Canvas>
-        </StarContext.Provider>
+        </>
     )
 }
 

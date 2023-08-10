@@ -60,10 +60,7 @@ export default function Star({options, reference, texture, position = [0, 0, 0],
         event.stopPropagation()
 
         if (globe.current && cameraControls.current.enabled) {
-            setStarInfo({
-                title: parameters.information.title,
-                content: parameters.information.content
-            })
+            setStarInfo(parameters)
 
             store.accessEventFired = true
             store.accessedUuid = reference.current.uuid

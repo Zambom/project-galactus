@@ -1,5 +1,5 @@
 import { Perf } from "r3f-perf";
-import { useMemo, useRef } from "react";
+import { useContext, useMemo, useRef } from "react";
 import { DoubleSide, Scene } from "three";
 import { OrbitControls } from "@react-three/drei";
 import { createPortal, useFrame } from "@react-three/fiber";
@@ -13,9 +13,12 @@ import texFragmentShader from '../shaders/Star/texture/fragment.glsl';
 import store from "../store";
 import { toggleVisibility } from "../utils/html";
 import { gsap } from "gsap";
+import StarContext from "../contexts/Star";
 
 function StarSystemDetails() {
-    const planetsCount = 10
+    const planetsCount = 8
+
+    const { starInfo } = useContext(StarContext)
 
     const backBtn = document.getElementById("backBtn")
     const infoModal = document.getElementById("infoModal")
@@ -32,8 +35,15 @@ function StarSystemDetails() {
     }
 
     const starOptions = useMemo(() => {
-        const options = randomStar()
+        const options = starInfo ?? randomStar()
         options.scale = Math.max(1.5, Math.random() * 5.0)
+
+        if (!options.information) {
+            options.information = {
+                title: options.title,
+                content: options.content
+            }
+        }
 
         return options
     }, [])

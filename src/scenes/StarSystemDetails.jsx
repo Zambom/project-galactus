@@ -12,7 +12,7 @@ function StarSystemDetailsScene() {
     const [planetInfo, setPlanetInfo] = useReducer(PlanetReducer, {})
 
     return (
-        <StarContext.Provider value={{ starInfo, setStarInfo}}>
+        <>
             <PlanetContext.Provider value={{ planetInfo, setPlanetInfo }}>
                 <HtmlCanvas />
                 <Canvas
@@ -23,7 +23,7 @@ function StarSystemDetailsScene() {
                     <StarSystemDetails />
                 </Canvas>
             </PlanetContext.Provider>
-        </StarContext.Provider>
+        </>
     )
 }
 

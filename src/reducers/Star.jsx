@@ -1,6 +1,8 @@
 export default function StarReducer(state, item) {
     return {
-        title: item.title,
-        content: item.content
+        scale: item.scale,
+        colorFactors: item.colorFactors,
+        title: item.information.title,
+        content: item.information.content,
     }
 }
