@@ -31,8 +31,12 @@ function StarSystemDetails() {
         orbitsReferences.push(useRef())
     }
 
-    const starOptions = randomStar()
-    starOptions.scale = Math.max(1.5, Math.random() * 5.0)
+    const starOptions = useMemo(() => {
+        const options = randomStar()
+        options.scale = Math.max(1.5, Math.random() * 5.0)
+
+        return options
+    }, [])
 
     const planetsConfig = useMemo(() => {
         const configs = []

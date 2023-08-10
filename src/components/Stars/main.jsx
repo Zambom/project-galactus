@@ -78,7 +78,7 @@ export default function Star({options, reference, texture, position = [0, 0, 0],
             gsap.to(camera.position, {
                 x: position.x,
                 y: position.y,
-                z: position.z + 15.0,
+                z: position.z + 15.0 + (5.0 * parameters.scale),
                 onComplete: () => {
                     camera.lookAt(position)
                     camera.updateProjectionMatrix()
