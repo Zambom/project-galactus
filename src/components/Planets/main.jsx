@@ -1,6 +1,6 @@
-import { useFrame } from "@react-three/fiber"
+import { useFrame, useThree } from "@react-three/fiber"
 import { DoubleSide, Vector3 } from "three"
-import { useMemo, useRef } from "react"
+import { useContext, useMemo, useRef } from "react"
 
 import vertexRockyShader from "../../shaders/Planet/rocky/vertex.glsl"
 import fragmentRockyShader from "../../shaders/Planet/rocky/fragment.glsl"
@@ -10,10 +10,21 @@ import fragmentGassyShader from "../../shaders/Planet/gassy/fragment.glsl"
 
 import vertexRingShader from "../../shaders/Planet/rings/vertex.glsl"
 import fragmentRingShader from "../../shaders/Planet/rings/fragment.glsl"
+import PlanetContext from "../../contexts/Planet"
+import store from "../../store"
+import { gsap } from "gsap"
+import { toggleVisibility } from "../../utils/html"
 
-export default function Planet({ options }) {
-    const mesh = useRef()
+export default function Planet({ reference, options, cameraControls }) {
+    const { setPlanetInfo } = useContext(PlanetContext)
+    
+    const globe = useRef()
     const rings = useRef()
+
+    const { camera } = useThree()
+
+    const backBtn = document.getElementById("backBtn")
+    const infoModal = document.getElementById("infoModal")
 
     const defaults = {
         type: 0,
@@ -76,14 +87,49 @@ export default function Planet({ options }) {
     useFrame((state) => {
         const { clock } = state
 
-        mesh.current.material.uniforms.uTime.value = clock.getElapsedTime()
+        globe.current.material.uniforms.uTime.value = clock.getElapsedTime()
 
-        mesh.current.rotation.y += parameters.rotation
+        globe.current.rotation.y += parameters.rotation
     })
 
+    const clickEvent = (event) => {
+        event.stopPropagation()
+        
+        if (globe.current && cameraControls.current.enabled) {
+            setPlanetInfo({
+                title: parameters.information.title,
+                content: parameters.information.content
+            })
+
+            store.accessEventFired = true
+            store.individualView = true
+            store.accessedUuid = reference.current.uuid
+
+            setTimeout(() => {
+                const position = new Vector3()
+                globe.current.getWorldPosition(position)
+    
+                cameraControls.current.enabled = false
+
+                gsap.to(camera.position, {
+                    x: position.x,
+                    y: position.y,
+                    z: position.z + 15.0,
+                    onComplete: () => {
+                        camera.lookAt(position)
+                        camera.updateProjectionMatrix()
+    
+                        toggleVisibility(backBtn)
+                        toggleVisibility(infoModal)
+                    }
+                })
+            }, 500)
+        }
+    }
+
     return (
-        <group position={[parameters.orbit, 0, -5]} rotation={[0.01, 0.2, parameters.inclination]} scale={parameters.scale}>
-            <mesh ref={mesh} visible={true}>
+        <group ref={reference} position={[parameters.orbit, 0, -5]} rotation={[0.01, 0.2, parameters.inclination]} scale={parameters.scale}>
+            <mesh ref={globe} onClick={clickEvent}>
                 <sphereGeometry args={[5, 32, 32]} />
                 <shaderMaterial 
                     uniforms={uniforms}

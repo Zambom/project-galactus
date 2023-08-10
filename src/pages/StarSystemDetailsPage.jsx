@@ -10,13 +10,18 @@ import { generateCustomTexture } from "../utils/textures";
 
 import texVertexShader from '../shaders/Star/texture/vertex.glsl';
 import texFragmentShader from '../shaders/Star/texture/fragment.glsl';
+import store from "../store";
+import { toggleVisibility } from "../utils/html";
+import { gsap } from "gsap";
 
 function StarSystemDetails() {
     const planetsCount = 10
 
+    const backBtn = document.getElementById("backBtn")
+    const infoModal = document.getElementById("infoModal")
+
     const star = useRef()
     const cameraControls = useRef()
-    const planetOrbit = useRef()
 
     const planetsReferences = []
     const orbitsReferences = []
@@ -56,8 +61,8 @@ function StarSystemDetails() {
     }), [])
 
     const planets = planetsConfig.map((config, index) => {
-        return <group key={index} ref={orbitsReferences[index]} position={[0, 0, -10]}>
-            <Planet options={config.options} />
+        return <group key={index} ref={orbitsReferences[index]} rotation-y={Math.random() * Math.PI} position={[0, 0, -10]}>
+            <Planet reference={planetsReferences[index]} options={config.options} cameraControls={cameraControls} />
         </group>
     })
 
@@ -68,9 +73,47 @@ function StarSystemDetails() {
 
         update()
 
-        orbitsReferences.forEach((el, index) => {
-            el.current.rotation.y += planetsConfig[index].translationSpeed
-        })
+        if (!store.individualView) {
+            orbitsReferences.forEach((el, index) => {
+                el.current.rotation.y += planetsConfig[index].translationSpeed
+            })
+        }
+
+        if (store.accessEventFired) {
+            planetsReferences.forEach(el => {
+                if (el.current.uuid !== store.accessedUuid) {
+                    el.current.visible = false
+                }
+            })
+
+            star.current.visible = false
+
+            store.accessEventFired = false
+        }
+
+        if (store.resetPositionEventFired) {
+            planetsReferences.forEach(el => {
+                el.current.visible = true
+            })
+
+            star.current.visible = true
+
+            toggleVisibility(infoModal)
+
+            gsap.to(camera.position,  {
+                x: 0,
+                y: 0,
+                z: 0,
+                onComplete: () => {
+                    cameraControls.current.enabled = true
+                    cameraControls.current.reset()
+
+                    toggleVisibility(backBtn)
+                }
+            })
+
+            store.resetPositionEventFired = false
+        }
     }, [])
 
     return (
@@ -92,7 +135,7 @@ function StarSystemDetails() {
             )}
             <Perf position="top-left" />
 
-            <OrbitControls />
+            <OrbitControls ref={cameraControls} />
 
             <Star
                 reference={star}
