@@ -5,13 +5,16 @@ import { generatePosition, generateRotation } from '../utils/positioning'
 import { randomGalaxy } from '../utils/randomizeElements'
 import { Perf } from 'r3f-perf'
 import { useFrame } from '@react-three/fiber'
+import { useLoaderData } from 'react-router-dom'
 
 import store from '../store'
 import { gsap } from 'gsap'
 import { toggleVisibility } from '../utils/html'
 
 function Galaxies() {
-  const galaxiesCount = 7
+  const galaxiesData = useLoaderData()
+
+  const galaxiesCount = galaxiesData.length
 
   const cameraControls = useRef()
 
@@ -33,6 +36,9 @@ function Galaxies() {
       const rotation = generateRotation()
 
       const options = randomGalaxy()
+
+      options.information.title = galaxiesData[i].name
+      options.information.description = galaxiesData[i].description
 
       configs.push({ options, position: pos, rotation })
     }
