@@ -28,8 +28,8 @@ export const randomColor = () => {
 }
 
 export const randomGalaxy = () => {
-    const coreFactor = Math.round(Math.random() * 6)
-    const boundFactor = Math.round(Math.random() * 6)
+    const coreFactor = Math.floor(Math.random() * 6)
+    const boundFactor = Math.floor(Math.random() * 6)
 
     const branches = Math.round((Math.random() + 0.5) * 4)
     const speed = Math.max(Math.random(), .2)

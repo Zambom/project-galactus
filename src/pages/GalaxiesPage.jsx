@@ -1,6 +1,6 @@
 import { OrbitControls } from '@react-three/drei'
 import Galaxy from '../components/Galaxies/main'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { generatePosition, generateRotation } from '../utils/positioning'
 import { randomGalaxy } from '../utils/randomizeElements'
 import { Perf } from 'r3f-perf'
@@ -10,6 +10,7 @@ import { useLoaderData } from 'react-router-dom'
 import store from '../store'
 import { gsap } from 'gsap'
 import { toggleVisibility } from '../utils/html'
+import { updateParameters } from '../controllers/Galaxy'
 
 function Galaxies() {
   const galaxiesData = useLoaderData()
@@ -24,26 +25,52 @@ function Galaxies() {
     galaxyReferences.push(useRef())
   }
 
-  const galaxiesConfig = useMemo(() => {
+  const { configs: galaxiesConfig, updateData } = useMemo(() => {
     const configs = []
+
+    const updateData = []
 
     const positions = []
 
     for (let i = 0; i < galaxiesCount; i++) {
-      const pos = generatePosition(positions, 5, {x: 80, y: 30, z: 10, z_tweak: 2})
+      const galaxyData = galaxiesData[i]
+
+      let pos, rotation, options
+
+      if (galaxyData.parameters && galaxyData.parameters !== "") {
+        const params = JSON.parse(galaxyData.parameters)
+
+        pos = params.position
+
+        rotation = params.rotation
+
+        options = params.options
+      } else {
+        pos = generatePosition(positions, 5, {x: 80, y: 30, z: 10, z_tweak: 2})
+  
+        rotation = generateRotation()
+  
+        options = randomGalaxy()
+
+        updateData.push({ 
+          id: galaxyData.id, 
+          name: galaxyData.name,
+          description: galaxyData.description,
+          parameters: JSON.stringify({ options, position: pos, rotation }) 
+        })
+      }
+      
       positions.push(pos)
 
-      const rotation = generateRotation()
+      options.information.title = galaxyData.name
+      options.information.content = galaxyData.description
 
-      const options = randomGalaxy()
+      const parameters = { options, position: pos, rotation }
 
-      options.information.title = galaxiesData[i].name
-      options.information.description = galaxiesData[i].description
-
-      configs.push({ options, position: pos, rotation })
+      configs.push(parameters)
     }
 
-    return configs
+    return { configs, updateData }
   }, [])
 
   const galaxies = galaxiesConfig.map((config, index) => {
@@ -59,6 +86,16 @@ function Galaxies() {
   
   const backBtn = document.getElementById("backBtn")
   const infoModal = document.getElementById("infoModal")
+
+  useEffect(() => {
+    const update = async () => {
+      if (updateData && updateData.length > 0) {
+        await updateParameters(updateData)
+      }
+    }
+
+    update()
+  }, [updateData])
 
   useFrame((state) => {
     if (store.accessEventFired) {
