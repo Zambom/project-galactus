@@ -9,7 +9,7 @@ export default function InfoModal({ className }) {
     const classes = `modal ${className}`
 
     const handleExplore = () => {
-        navigate('/star-systems')
+        navigate(`/star-systems/${galaxyInfo.id}`)
     }
 
     return (

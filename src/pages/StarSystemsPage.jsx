@@ -31,7 +31,7 @@ function StarSystems() {
         starReferences.push(useRef())
     }
 
-    const { config: starsConfig, updateData } = useMemo(() => {
+    const { configs: starsConfig, updateData } = useMemo(() => {
         const configs = []
 
         const updateData = []
@@ -58,12 +58,14 @@ function StarSystems() {
                     id: starData.id,
                     name: starData.name,
                     description: starData.description,
+                    galaxy_id: starData.galaxy_id,
                     parameters: JSON.stringify({ options, position: pos })
                 })
             }
 
             positions.push(pos)
 
+            options.information.id = starData.id
             options.information.title = starData.name
             options.information.content = starData.description
 
@@ -96,13 +98,13 @@ function StarSystems() {
     })
 
     useEffect(() => {
-        const update = async () => {
+        const updateParams = async () => {
             if (updateData && updateData.length > 0) {
                 await updateParameters(updateData)
             }
         }
 
-        update()
+        updateParams()
     }, [updateData])
 
     useFrame((state) => {

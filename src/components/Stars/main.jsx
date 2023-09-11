@@ -28,6 +28,7 @@ export default function Star({options, reference, texture, position = [0, 0, 0],
         scale: 1.0,
         colorFactors: new Vector3(1.0, 2.0, 4.0),
         information: {
+            id: 0,
             title: 'Estrela A',
             content: '',
         }

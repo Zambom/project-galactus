@@ -15,7 +15,7 @@ import { updateParameters } from '../controllers/Galaxy'
 function Galaxies() {
   const galaxiesData = useLoaderData()
 
-  const galaxiesCount = galaxiesData.length
+  const galaxiesCount = galaxiesData.length || 0
 
   const cameraControls = useRef()
 
@@ -62,12 +62,11 @@ function Galaxies() {
       
       positions.push(pos)
 
+      options.information.id = galaxyData.id
       options.information.title = galaxyData.name
       options.information.content = galaxyData.description
 
-      const parameters = { options, position: pos, rotation }
-
-      configs.push(parameters)
+      configs.push({ options, position: pos, rotation })
     }
 
     return { configs, updateData }

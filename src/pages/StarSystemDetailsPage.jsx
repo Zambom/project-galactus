@@ -79,6 +79,7 @@ function StarSystemDetails() {
                     id: planetData.id,
                     name: planetData.name,
                     description: planetData.description,
+                    star_id: planetData.star_id,
                     parameters: JSON.stringify({ options, translationSpeed })
                 })
             }

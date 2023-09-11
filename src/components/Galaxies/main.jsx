@@ -34,6 +34,7 @@ export default function Galaxy({ options, reference, position = [0, 0, 0], rotat
         insideColor: 0xff6030,
         outsideColor: 0x1b3984,
         information: {
+            id: 0,
             title: 'Galáxia A',
             content: '',
         }
@@ -114,6 +115,7 @@ export default function Galaxy({ options, reference, position = [0, 0, 0], rotat
         event.stopPropagation()
         if (galaxy.current && cameraControls.current.enabled) {
             setGalaxyInfo({
+                id: parameters.information.id,
                 title: parameters.information.title,
                 content: parameters.information.content
             })
