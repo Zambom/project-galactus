@@ -1,5 +1,5 @@
 import { Perf } from "r3f-perf";
-import { useContext, useMemo, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { DoubleSide, Scene } from "three";
 import { OrbitControls } from "@react-three/drei";
 import { createPortal, useFrame } from "@react-three/fiber";
@@ -14,9 +14,13 @@ import store from "../store";
 import { toggleVisibility } from "../utils/html";
 import { gsap } from "gsap";
 import StarContext from "../contexts/Star";
+import { useLoaderData } from "react-router-dom";
+import { updateParameters } from "../controllers/Planet";
 
 function StarSystemDetails() {
-    const planetsCount = 8
+    const planetsData = useLoaderData()
+
+    const planetsCount = planetsData.length || 0
 
     const { starInfo } = useContext(StarContext)
 
@@ -48,21 +52,46 @@ function StarSystemDetails() {
         return options
     }, [])
 
-    const planetsConfig = useMemo(() => {
+    const { configs: planetsConfig, updateData } = useMemo(() => {
         const configs = []
+
+        const updateData = []
+
         const orbits = [5 * starOptions.scale]
 
         for (let i = 0; i < planetsCount; i++) {
-            const options = randomPlanet(6, orbits)
+            const planetData = planetsData[i]
+
+            let options, translationSpeed
+
+            if (planetData.parameters && planetData.parameters !== "") {
+                const params = JSON.parse(planetData.parameters)
+
+                options = params.options
+
+                translationSpeed = params.translationSpeed
+            } else {
+                options = randomPlanet(6, orbits)
+
+                translationSpeed = (Math.random() + 0.5) / (options.orbit * 20)
+
+                updateData.push({
+                    id: planetData.id,
+                    name: planetData.name,
+                    description: planetData.description,
+                    parameters: JSON.stringify({ options, translationSpeed })
+                })
+            }
 
             orbits.push(options.orbit)
 
-            const translationSpeed = (Math.random() + 0.5) / (options.orbit * 1.1)
+            options.information.title = planetData.name
+            options.information.content = planetData.description
 
             configs.push({ options, translationSpeed })
         }
 
-        return configs
+        return { configs, updateData }
     }, [])
 
     const texMaterial = useRef()
@@ -80,6 +109,16 @@ function StarSystemDetails() {
             <Planet reference={planetsReferences[index]} options={config.options} cameraControls={cameraControls} />
         </group>
     })
+
+    useEffect(() => {
+        const updateParams = async () => {
+            if (updateData && updateData.length > 0) {
+                await updateParameters(updateData)
+            }
+        }
+
+        updateParams()
+    }, [updateData])
 
     useFrame((state) => {
         const { camera, clock } = state
