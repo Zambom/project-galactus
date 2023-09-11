@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { Perf } from "r3f-perf"
 import { DoubleSide, Scene } from "three"
 import { createPortal, useFrame } from "@react-three/fiber"
@@ -14,9 +14,13 @@ import { randomStar } from "../utils/randomizeElements"
 import store from "../store"
 import { toggleVisibility } from "../utils/html"
 import { gsap } from "gsap"
+import { useLoaderData } from "react-router-dom"
+import { updateParameters } from "../controllers/StarSystem"
 
 function StarSystems() {
-    const starsCount = 10
+    const starsData = useLoaderData()
+
+    const starsCount = starsData.length || 0
 
     const backBtn = document.getElementById("backBtn")
     const infoModal = document.getElementById("infoModal")
@@ -27,21 +31,46 @@ function StarSystems() {
         starReferences.push(useRef())
     }
 
-    const starsConfig = useMemo(() => {
+    const { config: starsConfig, updateData } = useMemo(() => {
         const configs = []
+
+        const updateData = []
 
         const positions = []
 
         for (let i = 0; i < starsCount; i++) {
-            const pos = generatePosition(positions, 7, { x: 400, y: 100, z: 100, z_tweak: 2 })
+            const starData = starsData[i]
+
+            let pos, options
+
+            if (starData.parameters && starData.parameters !== "") {
+                const params = JSON.parse(starData.parameters)
+
+                pos = params.position
+
+                options = params.options
+            } else {
+                pos = generatePosition(positions, 7, { x: 400, y: 100, z: 100, z_tweak: 2 })
+
+                options = randomStar()
+
+                updateData.push({
+                    id: starData.id,
+                    name: starData.name,
+                    description: starData.description,
+                    parameters: JSON.stringify({ options, position: pos })
+                })
+            }
+
             positions.push(pos)
 
-            const options = randomStar()
+            options.information.title = starData.name
+            options.information.content = starData.description
 
             configs.push({ options, position: pos })
         }
 
-        return configs
+        return { configs, updateData }
     }, [])
 
     const cameraControls = useRef()
@@ -65,6 +94,16 @@ function StarSystems() {
             cameraControls={cameraControls}
         />
     })
+
+    useEffect(() => {
+        const update = async () => {
+            if (updateData && updateData.length > 0) {
+                await updateParameters(updateData)
+            }
+        }
+
+        update()
+    }, [updateData])
 
     useFrame((state) => {
         const { camera, clock } = state

@@ -17,6 +17,7 @@ import PlanetContext from './contexts/Planet.jsx'
 import PlanetReducer from './reducers/Planet.jsx'
 
 import { loader as GalaxyLoader } from './controllers/Galaxy.jsx'
+import { loader as StarLoader } from './controllers/StarSystem.jsx'
 
 function Router() {
   const [galaxyInfo, setGalaxyInfo] = useReducer(GalaxyReducer, {})
@@ -30,8 +31,9 @@ function Router() {
       loader: GalaxyLoader
     },
     {
-      path: "star-systems",
-      element: <StarSystemsScene />
+      path: "star-systems/:galaxy_id",
+      element: <StarSystemsScene />,
+      loader: async ({params}) => StarLoader(params.galaxy_id)
     },
     {
       path: "star-system-details",
