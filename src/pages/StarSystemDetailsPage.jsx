@@ -88,6 +88,8 @@ function StarSystemDetails() {
 
             options.information.title = planetData.name
             options.information.content = planetData.description
+            options.information.article = planetData.article
+            options.information.page = planetData.page
 
             configs.push({ options, translationSpeed })
         }

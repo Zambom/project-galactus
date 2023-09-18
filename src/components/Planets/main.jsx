@@ -50,7 +50,9 @@ export default function Planet({ reference, options, cameraControls }) {
         ringOuterColor: new Vector3(0.33, 0.22, 0.47),
         information: {
             title: 'Planeta A',
-            content: ''
+            content: '',
+            article: '',
+            page: ''
         }
     }
 
@@ -104,7 +106,9 @@ export default function Planet({ reference, options, cameraControls }) {
         if (globe.current && cameraControls.current.enabled) {
             setPlanetInfo({
                 title: parameters.information.title,
-                content: parameters.information.content
+                content: parameters.information.content,
+                article: parameters.information.article,
+                page: parameters.information.page
             })
 
             store.accessEventFired = true
